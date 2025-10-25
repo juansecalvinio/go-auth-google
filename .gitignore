@@ -24,6 +24,7 @@
 # Go workspace file
 go.work
 
+.DS_Store
 .env
 
 # End of https://www.toptal.com/developers/gitignore/api/go
