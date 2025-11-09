@@ -7,6 +7,7 @@ import (
 	"juansecalvinio/go-auth-google/internal/config"
 	"juansecalvinio/go-auth-google/internal/core/service"
 	"log"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/sessions"
@@ -16,10 +17,17 @@ import (
 )
 
 func initGoth(cfg *config.Config) *sessions.CookieStore {
-	store := sessions.NewCookieStore([]byte(cfg.Security.SessionSecret))
-	store.MaxAge(cfg.Security.CookieMaxAge)
-	store.Options.HttpOnly = true
-	store.Options.Secure = cfg.Security.IsProd
+	key := []byte(cfg.Security.SessionSecret)
+	store := sessions.NewCookieStore(key)
+
+	store.Options = &sessions.Options{
+		Path:     "/",
+		MaxAge:   86400 * 30, // 30 días
+		HttpOnly: true,
+		Secure:   cfg.Security.IsProd,
+		SameSite: http.SameSiteLaxMode,
+	}
+
 	gothic.Store = store
 
 	goth.UseProviders(
