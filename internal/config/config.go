@@ -34,9 +34,11 @@ type SecurityConfig struct {
 
 // Load carga y valida la configuración desde variables de entorno
 func Load() (*Config, error) {
-	if err := godotenv.Load(); err != nil {
-		return nil, fmt.Errorf("error loading .env file: %w", err)
-	}
+	// if err := godotenv.Load(); err != nil {
+	// 	return nil, fmt.Errorf("error loading .env file: %w", err)
+	// }
+
+	_ = godotenv.Load()
 
 	config := &Config{
 		Server: ServerConfig{
