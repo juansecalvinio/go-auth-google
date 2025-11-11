@@ -48,7 +48,7 @@ func Load() (*Config, error) {
 		Auth: AuthConfig{
 			GoogleClientID:     mustGetEnv("GOOGLE_CLIENT_ID"),
 			GoogleClientSecret: mustGetEnv("GOOGLE_CLIENT_SECRET"),
-			CallbackURL:        getEnvOrDefault("AUTH_CALLBACK_URL", "http://localhost:8080/auth/google/callback"),
+			CallbackURL:        getEnvOrDefault("AUTH_CALLBACK_URL", "https://go-auth-google.onrender.com/auth/google/callback"),
 			Scopes:             []string{"email", "profile"},
 		},
 		Security: SecurityConfig{
