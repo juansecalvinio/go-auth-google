@@ -196,7 +196,7 @@ func (a *GinAdapter) completeAuthHandler(c *gin.Context) {
 
 	redirectURL := c.Query("state")
 	if redirectURL == "" {
-		redirectURL = "http://localhost:5173/profile"
+		redirectURL = "https://go-auth-google-react.vercel.app/profile"
 	}
 
 	c.Redirect(http.StatusTemporaryRedirect, redirectURL)
@@ -241,10 +241,27 @@ func (a *GinAdapter) logoutHandler(c *gin.Context) {
 
 // Configuración de CORS
 func CORSMiddleware() gin.HandlerFunc {
+	// Whitelist de orígenes permitidos. Añade aquí las URLs que quieras permitir.
+	allowedOrigins := []string{
+		"http://localhost:5173",
+		"https://go-auth-google-react.vercel.app",
+	}
+
 	return func(c *gin.Context) {
-		c.Writer.Header().Set("Access-Control-Allow-Origin", "http://localhost:5173")
-		c.Writer.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
-		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
+		origin := c.GetHeader("Origin")
+
+		// Por seguridad, no se recomienda responder con un header que contenga
+		// múltiples orígenes; en su lugar comparamos y devolvemos solo el origin
+		// que coincide con la whitelist.
+		for _, o := range allowedOrigins {
+			if o == origin {
+				c.Writer.Header().Set("Access-Control-Allow-Origin", origin)
+				break
+			}
+		}
+
+		c.Writer.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, DELETE")
+		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization, Accept")
 		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
 
 		if c.Request.Method == "OPTIONS" {
