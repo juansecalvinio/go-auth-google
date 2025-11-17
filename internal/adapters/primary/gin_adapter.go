@@ -63,6 +63,14 @@ func (a *GinAdapter) RegisterRoutes(router *gin.Engine) {
 
 	// Avatar proxy (evita problemas CORS/ORB y hotlinking)
 	router.GET("/avatar", a.avatarHandler)
+
+	// Health check
+	router.GET("/health", a.healthHandler)
+}
+
+// healthHandler proporciona un endpoint simple para comprobar que el backend está arriba.
+func (a *GinAdapter) healthHandler(c *gin.Context) {
+	c.JSON(http.StatusOK, gin.H{"status": "ok"})
 }
 
 // avatarHandler proxya una imagen remota al cliente. Se aplica una whitelist
