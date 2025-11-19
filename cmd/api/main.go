@@ -20,12 +20,17 @@ func initGoth(cfg *config.Config) *sessions.CookieStore {
 	key := []byte(cfg.Security.SessionSecret)
 	store := sessions.NewCookieStore(key)
 
+	sameSiteMode := http.SameSiteLaxMode
+	if cfg.Security.IsProd {
+		sameSiteMode = http.SameSiteNoneMode
+	}
+
 	store.Options = &sessions.Options{
 		Path:     "/",
 		MaxAge:   86400 * 30, // 30 días
 		HttpOnly: true,
 		Secure:   cfg.Security.IsProd,
-		SameSite: http.SameSiteLaxMode,
+		SameSite: sameSiteMode,
 	}
 
 	gothic.Store = store
@@ -69,7 +74,7 @@ func main() {
 
 	// --- 4. INICIO DEL SERVIDOR ---
 	router := gin.Default()
-	router.Use(primary.CORSMiddleware())
+	// router.Use(primary.CORSMiddleware())
 
 	ginAdapter.RegisterRoutes(router)
 
